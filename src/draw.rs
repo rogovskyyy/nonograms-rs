@@ -7,10 +7,7 @@ use piston_window::*;
 
 use crate::game::{ Game };
 use crate::board::{ Board };
-
-enum Move {
-    Up, Down, Left, Right, None
-}
+use crate::moves::{ Moves };
 
 pub struct Draw { }
 
@@ -26,21 +23,19 @@ impl Draw {
         let assets = find_folder::Search::ParentsThenKids(3, 3).for_folder("assets").unwrap();
         let mut glyphs = window.load_font(assets.join("FiraSans-ExtraBold.ttf")).unwrap();
 
-        //let mut touch_visualizer = TouchVisualizer::new();
-
-        let mut current_move: Move;
+        let mut pos: [i8; 2] = [5, 5];
 
         while let Some(event) = window.next() {
-            //touch_visualizer.event(window.size(), &event);
 
             if let Some(press_args) = event.press_args() {
-                current_move = match press_args {
-                    Button::Keyboard(Key::Up) => Move::Up,
-                    Button::Keyboard(Key::Down) => Move::Down,
-                    Button::Keyboard(Key::Left) => Move::Left,
-                    Button::Keyboard(Key::Right) => Move::Right,
-                    _ => Move::None
-                }
+                match press_args {
+                    Button::Keyboard(Key::Up) => Moves::current_move(Moves::Up, &mut pos),
+                    Button::Keyboard(Key::Down) => Moves::current_move(Moves::Down, &mut pos),
+                    Button::Keyboard(Key::Left) => Moves::current_move(Moves::Left, &mut pos),
+                    Button::Keyboard(Key::Right) => Moves::current_move(Moves::Right, &mut pos),
+                    _ => ()
+                };
+                println!("{:?}", pos);
             }
 
             window.draw_2d(&event, |context, graphics, _device| {
