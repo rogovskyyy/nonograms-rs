@@ -3,36 +3,32 @@ pub enum Moves {
 }
 
 impl Moves {
-    pub fn current_move(mov: Moves, pos: &mut [i8; 2]) {
+    pub fn current_move(mov: Moves, user_position: &mut [usize; 2]) {
         match mov {
-            Moves::Up => {
-                if pos[1] >= 1 {
-                    pos[1] -= 1;
-                } else {
-                    pos[1] = 9;
-                }
+            Moves::Up => { 
+                if user_position[0] >= 1 { user_position[0] -= 1; } else { user_position[0] = 9; }
             },
             Moves::Down => {
-                if pos[1] <= 8 {
-                    pos[1] += 1;
-                } else {
-                    pos[1] = 0;
-                }
+                if user_position[0] <= 8 { user_position[0] += 1; } else { user_position[0] = 0; }
             },
             Moves::Left => {
-                if pos[0] >= 1 {
-                    pos[0] -= 1;
-                } else {
-                    pos[0] = 9;
-                }
+                if user_position[1] >= 1 { user_position[1] -= 1; } else { user_position[1] = 9; }
             },
             Moves::Right => {
-                if pos[0] <= 8 {
-                    pos[0] += 1;
-                } else {
-                    pos[0] = 0;
-                }
+                if user_position[1] <= 8 { user_position[1] += 1; } else { user_position[1] = 0;}
             }
         }
+    }
+
+    pub fn set_current_position(user_position: &mut[usize; 2],  position: &mut[[usize; 10]; 10]) {
+        if position[user_position[0]][user_position[1]] == 0 {
+            position[user_position[0]][user_position[1]] = 1
+        } else {
+            position[user_position[0]][user_position[1]] = 0
+        }
+    }
+
+    pub fn if_win(position: [[usize; 10]; 10], map: [[usize; 10]; 10]) {
+        assert_ne!(position, map);
     }
 }

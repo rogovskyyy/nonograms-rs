@@ -12,7 +12,6 @@ use crate::moves::{ Moves };
 pub struct Draw { }
 
 impl Draw {
-
     pub fn render(win: Game, map: Board) {
         let mut window: PistonWindow = WindowSettings::new("Checkers.rs", win.window_size)
                     .resizable(false)
@@ -21,74 +20,73 @@ impl Draw {
                     .unwrap();
 
         let assets = find_folder::Search::ParentsThenKids(3, 3).for_folder("assets").unwrap();
-        let mut glyphs = window.load_font(assets.join("FiraSans-ExtraBold.ttf")).unwrap();
+        let mut glyphs = window.load_font(assets.join("FiraSans-Regular.ttf")).unwrap();
 
-        let mut pos: [i8; 2] = [5, 5];
+        let mut position: [[usize; 10]; 10] = [[0; 10]; 10];
+        let mut user_position: [usize; 2] = [1, 1];
 
         while let Some(event) = window.next() {
 
             if let Some(press_args) = event.press_args() {
                 match press_args {
-                    Button::Keyboard(Key::Up) => Moves::current_move(Moves::Up, &mut pos),
-                    Button::Keyboard(Key::Down) => Moves::current_move(Moves::Down, &mut pos),
-                    Button::Keyboard(Key::Left) => Moves::current_move(Moves::Left, &mut pos),
-                    Button::Keyboard(Key::Right) => Moves::current_move(Moves::Right, &mut pos),
+                    Button::Keyboard(Key::Up) => Moves::current_move(Moves::Up, &mut user_position),
+                    Button::Keyboard(Key::Right) => Moves::current_move(Moves::Right, &mut user_position),
+                    Button::Keyboard(Key::Down) => Moves::current_move(Moves::Down, &mut user_position),
+                    Button::Keyboard(Key::Left) => Moves::current_move(Moves::Left, &mut user_position),
+                    Button::Keyboard(Key::Space) => Moves::set_current_position(&mut user_position, &mut position),
                     _ => ()
                 };
-                println!("{:?}", pos);
+                println!("------------------------------");
+                for i in 0..10 {
+                    println!("{:?}", position[i]);
+                }
             }
 
             window.draw_2d(&event, |context, graphics, _device| {
 
                 clear([1.0; 4], graphics);
-
-                rectangle([0.0, 0.0, 0.0, 1.0],[175.0, 10.0, 515.0, 5.0], context.transform, graphics);
-                rectangle([0.0, 0.0, 0.0, 1.0],[10.0, 175.0, 680.0, 5.0], context.transform, graphics);
-                rectangle([0.0, 0.0, 0.0, 1.0],[10.0, 430.0, 680.0, 5.0], context.transform, graphics);
-                rectangle([0.0, 0.0, 0.0, 1.0],[10.0, 685.0, 680.0, 5.0], context.transform, graphics);
-        
-                rectangle([0.0, 0.0, 0.0, 1.0],[10.0, 175.0, 5.0, 515.0], context.transform, graphics);
-                rectangle([0.0, 0.0, 0.0, 1.0],[175.0, 10.0, 5.0, 680.0], context.transform, graphics);
-                rectangle([0.0, 0.0, 0.0, 1.0],[430.0, 10.0, 5.0, 680.0], context.transform, graphics);
-                rectangle([0.0, 0.0, 0.0, 1.0],[685.0, 10.0, 5.0, 680.0], context.transform, graphics);
-        
-                let mut pos = 181.0;
-                for _ in 0..4 {
-                    pos += 48.0;
-                    rectangle([0.0, 0.0, 0.0, 1.0],[10.0, pos, 680.0, 2.0], context.transform, graphics);
-                    pos += 2.0;
-                }
-        
-                pos = 436.0;
-                for _ in 0..4 {
-                    pos += 48.0;
-                    rectangle([0.0, 0.0, 0.0, 1.0],[10.0, pos, 680.0, 2.0], context.transform, graphics);
-                    pos += 2.0;
-                }
+                // x axis
+                rectangle([0.0, 0.0, 0.0, 1.0], [175.0, 5.0, 515.0, 5.0], context.transform, graphics);
+                rectangle([0.0, 0.0, 0.0, 1.0], [5.0, 175.0, 690.0, 5.0], context.transform, graphics);
+                rectangle([0.0, 0.0, 0.0, 1.0], [5.0, 690.0, 690.0, 5.0], context.transform, graphics);
+                // y axis
+                rectangle([0.0, 0.0, 0.0, 1.0], [5.0, 175.0, 5.0, 515.0], context.transform, graphics);
+                rectangle([0.0, 0.0, 0.0, 1.0], [175.0, 5.0, 5.0, 690.0], context.transform, graphics);
+                rectangle([0.0, 0.0, 0.0, 1.0], [690.0, 5.0, 5.0, 690.0], context.transform, graphics);
                 
-                pos = 181.0;
-                for _ in 0..4 {
-                    pos += 48.0;
-                    rectangle([0.0, 0.0, 0.0, 1.0],[pos, 10.0, 2.0, 680.0], context.transform, graphics);
-                    pos += 2.0;
-                }
-        
-                pos = 436.0;
-                for _ in 0..4 {
-                    pos += 48.0;
-                    rectangle([0.0, 0.0, 0.0, 1.0],[pos, 10.0, 2.0, 680.0], context.transform, graphics);
-                pos += 2.0;
+                let(mut x_axis, mut y_axis) = (180.0 , 180.0);
+
+                for _ in 0..9 {
+                    x_axis += 46.6;
+                    rectangle([0.0, 0.0, 0.0, 1.0], [x_axis, 5.0, 5.0, 690.0], context.transform, graphics);
+                    x_axis += 5.0;
                 }
 
+                for _ in 0..9 {
+                    y_axis += 46.6;
+                    rectangle([0.0, 0.0, 0.0, 1.0], [5.0, y_axis, 690.0, 5.0], context.transform, graphics);
+                    y_axis += 5.0;
+                }
 
-                let mut y: f64 = 215.0;
+                x_axis = 183.0;
+                y_axis = 183.0;
+
+                for j in 0..10 {
+                    for i in 0..10 {
+                        if position[j][i] == 1 { 
+                            rectangle([0.0, 0.0, 0.0, 1.0], [x_axis, y_axis, 41.0, 41.0], context.transform, graphics);
+                        }
+                        x_axis += 51.6;
+                    }
+                    x_axis = 183.0;
+                    y_axis += 51.6;
+                }
+
+                let mut y: f64 = 214.0;
 
                 for i in 0..map.horizontal_vec.len() {
                     let mut x: f64 = 145.0;
                     let g = map.horizontal_vec[i].len();
-                    if i == 5 {
-                        y += 5.0;
-                    }
                     for j in (0..g).rev() {
                         let transform = context.transform.trans(x, y);
                         text::Text::new_color([0.0, 0.0, 0.0, 1.0], 25).draw(
@@ -101,10 +99,10 @@ impl Draw {
                         glyphs.factory.encoder.flush(_device);
                         x -= 28.0;
                     }
-                    y += 50.0;
+                    y += 51.5;
                 }
 
-                let mut x: f64 = 201.0;
+                let mut x: f64 = 198.0;
 
                 for i in 0..map.vertical_vec.len() {
                     let mut y: f64 = 165.0;
@@ -124,12 +122,10 @@ impl Draw {
                         glyphs.factory.encoder.flush(_device);
                         y -= 31.0;
                     }
-                    x += 50.0;
+                    x += 51.0;
                 }
 
-                //println!("Map  | {:?}", map.map);
-                //println!("Hori | {:?}", map.horizontal_vec);
-                //println!("Vert | {:?}", map.vertical_vec);
+                Moves::if_win(position, map.map);
             });
         }
     }

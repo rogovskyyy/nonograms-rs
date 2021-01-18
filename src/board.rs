@@ -1,10 +1,10 @@
 use rand::Rng;
 
 pub struct Board {
-    pub map: [[i32; 10]; 10],
-    pub horizontal_vec: Vec<Vec<i32>>,
-    pub vertical_vec: Vec<Vec<i32>>,
-    pub current_position: [[i32; 10]; 10]
+    pub map: [[usize; 10]; 10],
+    pub horizontal_vec: Vec<Vec<usize>>,
+    pub vertical_vec: Vec<Vec<usize>>,
+    pub current_position: [[usize; 10]; 10]
 }
 
 impl Board {
@@ -18,8 +18,8 @@ impl Board {
         }
     }
 
-    fn generate() -> [[i32; 10]; 10] {
-        let mut t_map: [[i32; 10]; 10] = [[0; 10]; 10];
+    fn generate() -> [[usize; 10]; 10] {
+        let mut t_map: [[usize; 10]; 10] = [[0; 10]; 10];
         for j in 0..10 {
             for i in 0..10 {
                 let num = rand::thread_rng().gen_range(0..2);
@@ -29,11 +29,11 @@ impl Board {
         t_map
     }
 
-    fn horizontal_vec(map: &[[i32; 10]; 10]) -> Vec<Vec<i32>> {
-        let mut vectors: Vec<Vec<i32>> = Vec::new();
+    fn horizontal_vec(map: &[[usize; 10]; 10]) -> Vec<Vec<usize>> {
+        let mut vectors: Vec<Vec<usize>> = Vec::new();
         let mut counter = 0;
         for i in 0..10 {
-            let mut subvector: Vec<i32> = Vec::new();
+            let mut subvector: Vec<usize> = Vec::new();
             for j in 0..10 {
                 if map[i][j] != 0 {
                     counter += 1;
@@ -54,11 +54,11 @@ impl Board {
         vectors
     }
 
-    fn vertical_vec(map: &[[i32; 10]; 10]) -> Vec<Vec<i32>> {
-        let mut vectors: Vec<Vec<i32>> = Vec::new();
+    fn vertical_vec(map: &[[usize; 10]; 10]) -> Vec<Vec<usize>> {
+        let mut vectors: Vec<Vec<usize>> = Vec::new();
         let mut counter = 0;
         for i in 0..10 {
-            let mut subvector: Vec<i32> = Vec::new();
+            let mut subvector: Vec<usize> = Vec::new();
             for j in 0..10 {
                 if map[j][i] != 0 {
                     counter += 1;
